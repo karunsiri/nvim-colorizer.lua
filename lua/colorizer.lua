@@ -614,6 +614,7 @@ local function setup(filetypes, user_default_options)
 			end
 		end
 	end
+	nvim.ex.autocmd("ColorScheme", "*", "lua require('colorizer').clear_highlight_cache()")
 	nvim.ex.augroup("END")
 end
 
@@ -622,6 +623,12 @@ local function reload_all_buffers()
 	for buf, buffer_options in pairs(BUFFER_OPTIONS) do
 		attach_to_buffer(buf)
 	end
+end
+
+--- Clear the highlight cache and reload all buffers.
+local function clear_highlight_cache()
+	HIGHLIGHT_CACHE = {}
+	vim.schedule(reload_all_buffers)
 end
 
 --- Return the currently active buffer options.
@@ -639,6 +646,7 @@ return {
 	setup = setup;
 	is_buffer_attached = is_buffer_attached;
 	attach_to_buffer = attach_to_buffer;
+	clear_highlight_cache = clear_highlight_cache,
 	detach_from_buffer = detach_from_buffer;
 	highlight_buffer = highlight_buffer;
 	reload_all_buffers = reload_all_buffers;
